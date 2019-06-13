@@ -1,0 +1,166 @@
+
+def Hbonds_new(molecule,zval,atomid1,atomid2,inout,twotb=False,save=False,plotting=False):
+    """
+    Get internal H bonds between atomid1 = bynum of polar h, atomid2 = bynum of heavy atom
+    """
+
+    #Get the trajectory into universe object
+    if twotb == True:
+        u = newUin(molecule,inout,zval)
+    if twotb == False:
+        u = readinU("/home/kselvon/Downloads/directedruns/",molecule,zval,inout)
+
+    freqstore = np.zeros(69)
+    count =0
+
+    pos_array1 = np.zeros((len(u.trajectory),3))
+    pos_array2 = np.zeros((len(u.trajectory),3))
+    r = np.zeros((len(u.trajectory),1))
+
+    atom1 = u.select_atoms(atomid1)
+    atom2 = u.select_atoms(atomid2)
+    print('getting atom positions')
+    for n,ts in enumerate(u.trajectory):
+
+        pos_array1[n] = atom1.get_positions()
+        pos_array2[n] = atom2.get_positions()
+
+    xyzdiff = pos_array1 - pos_array2
+    xyzdiff = xyzdiff**2
+
+    for i in range(len(u.trajectory)):
+        r[i] = sum(xyzdiff[i])
+
+
+    r = r**0.5
+
+    freq,bin_edges = np.histogram(r,bins=np.arange(0,30.25,0.25))
+
+    freq = freq/np.float(len(u.trajectory))
+#    if plotting == True:
+#        print('plotting')
+#        plt.figure()
+#        plt.plot(bin_edges[0:len(bin_edges)-1],freq)
+#        plt.xlabel('z Angstrom')
+#        plt.ylabel('Frequency')
+#        title='Distance distribution function between '+atomid1+' and '+atomid2
+#        plt.title(title)
+#        if save == True:
+# plt.savefig('/media/kselvon/D20492AA049290D9/Iridis-runs/E-decomposed/'+molecule+'/'+title)
+
+    #bondval = np.trapz(freq[0:14],bin_edges[0:14])
+    bondval  = sum(r <= 3.25)/float(len(u.trajectory))
+
+    return bondval
+#
+def graph_Hbonds_new(molecule,id1,id2,inout,zrange,twotb=False,saverdf=False,save=False,plot=False):
+
+    bvalstore = []
+    for i in zrange:
+        print('on z val ',i)
+        bvalstore.append(Hbonds_new(molecule,i,id1,id2,inout,twotb,saverdf,plotting=plot))
+    plt.figure()
+    plt.plot(bvalstore)
+    plt.ylabel('Intramolecular hydrogen bonds')
+    plt.xlabel('z Angstrom')
+    plt.title('Internal H bonding between '+id1+' and '+id2)
+    if save == True:
+        plt.savefig('/media/kselvon/D20492AA049290D9/Iridis-runs/E-decomposed/'+molecule+'/InternalHbonds_'+id1+'_'+id2)
+    return bvalstore
+
+#def get_hvy_indicies(molecule,typelist,inout,zval=0):
+#    u = readinU("/home/kselvon/Downloads/directedruns/",molecule ,zval,inout)
+#    solute = u.select_atoms('resid 129')
+#    indlist = [i for i, x in enumerate(solute.names) if x in typelist]
+#
+#    hvylist =[]
+#    namelist =[]
+#    for i in indlist:
+#        hvylist.append(solute.indices[i]+1)
+#        namelist.append(solute.names[i])
+#    return hvylist,namelist
+
+
+
+
+
+def get_hvy_indicies_new(molecule,typelist,inout,twotb,zval=0):
+    
+    if twotb == True:
+        u = newUin(molecule,inout,zval)
+    if twotb == False:
+        u = readinU("/home/kselvon/Downloads/directedruns/",molecule ,zval,inout)
+#    if molecule =='alprenolol':
+#        u = readinU_betablocker(molecule,zval,'in')
+#    if molecule =='pindolol':
+#        u = readinU_HDD('',molecule,zval,inout)
+
+
+    solute = u.select_atoms('resid 129')
+    indlist = [i for i, x in enumerate(solute.names) if x in typelist]
+
+    hvylist =[]
+    namelist =[]
+    for i in indlist:
+        hvylist.append(solute.indices[i]+1)#the plus 1 is needed to get correct indexing sol.indicies retuns a number 1 too small
+        namelist.append(solute.names[i])
+    return hvylist,namelist
+
+
+
+def internal_hydrogen_bonding_new(molecule,inout,dnr,polarh,custnames=False,indexs=[],twotb=False,savehbonds=False):
+#    if molecule =='betaxolol':
+#        dnr = ['10','12','14']
+#        polarh =[6170,6164]
+#    if molecule == 'acyclovir':
+#        dnr = ['7','11','13','17']
+#        polarh = [6177,6154]
+#    if molecule == 'antipyrine':
+#       dnr = ['9','10']
+#    if molecule == 'pindolol':
+#        dnr = ['10','12','14']
+#        polarh=[6164,6171]
+#    if molecule =='piroxicam':
+#        dnr = ['9','10','11','14']
+#        polarh=[6178,6173]
+#    if molecule == 'ranitidine':
+#        dnr = ['9','12','13','16'] #type name of donor atoms
+#        polarh = [6183,6186] #indexes of polar H as given in pdb (NEED -1 to index in vmd)
+#
+#
+    if custnames == False:
+        hatomlist,names = get_hvy_indicies_new(molecule,dnr,inout,twotb,zval=0)
+    if custnames == True:
+        hatomlist = indexs
+        
+        
+    mydict ={}
+    for n,j in enumerate(polarh):
+        for m,i in enumerate(hatomlist):
+             print('on ',n, ' of ',len(polarh),'polarh, on ',m,' of ',len(hatomlist),' hatoms' )
+             mydict['atoms '+str(i)+' '+str(j)] = graph_Hbonds_new(molecule,'bynum '+str(i),'bynum '+str(j),inout,range(31),twotb,saverdf=False,save=savehbonds,plot=False)
+
+
+    return mydict
+
+
+def intH_inout_compare_plotter(molecule,dictin,dictout,typedict,save=False):
+    """ plot intH for a each heavy atom, on seperate graphs comparing in and out"""
+    inkeys = dictin.keys()
+    outkeys = dictout.keys()
+    assert (inkeys == outkeys), 'keys from in and out dictionaries differ'
+
+    for key in inkeys:
+        title = 'Int H bonding'+' '+molecule+' for: '+str(typedict[key[:10]]+' h'+key[11:15])
+        plt.figure()
+        plt.plot(dictin[key],label='in')
+        plt.plot(dictout[key],label='out')
+        plt.title(title)
+        plt.legend(loc='best')
+        plt.xlabel('z depth Angstom')
+        plt.ylabel('H bonds')
+        if save==True:
+            savedir = '/home/kselvon/Downloads/directedruns/'+molecule+'/intH'
+            plt.savefig(savedir+'/'+title)
+
+
