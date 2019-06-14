@@ -13,12 +13,12 @@ def dihedral2(p):
     return np.degrees(np.arctan2( y, x ))
 
 
-def PBCFIX_dihedralplusangles2(molecule,quartetlist,zval): 
-    """Function to perform analysis of dihedrals during simulations (version 2 of function) with PBXFIX applied """
+def PBCFIX_dihedralplusangles(molecule,quartetlist,zval): 
+    """Function to perform analysis of dihedrals during simulations with PBXFIX applied """
     u_in = readinU('/media/kselvon/7A82B43582B3F42B/iridisruns2019/trajectoriesForMD/'
-,molecule,zval,'in')
+, molecule, zval, 'in')
     u_out = readinU('/media/kselvon/7A82B43582B3F42B/iridisruns2019/trajectoriesForMD/'
-,molecule,zval,'out')
+, molecule, zval, 'out')
     
     #uncomment this line to check in/out length consistency 
     #assert (len(u_in.trajectory)==len(u_out.trajectory)), 'In/out trajectories different length'
@@ -27,8 +27,8 @@ def PBCFIX_dihedralplusangles2(molecule,quartetlist,zval):
     globaldhstore_in = []
     globaldhstore_out= []
     #Get frame by frame dimensions
-    dims_in = np.zeros((len(u_in.trajectory),3))
-    dims_out = np.zeros((len(u_out.trajectory),3))
+    dims_in = np.zeros((len(u_in.trajectory), 3))
+    dims_out = np.zeros((len(u_out.trajectory), 3))
     for ts in u_in.trajectory:
         dims_in[ts.frame] = u_in.dimensions[0:3]
     for ts in u_out.trajectory:
@@ -101,7 +101,7 @@ def PBCFIX_dihedralplusangles2(molecule,quartetlist,zval):
 return globaldhstore_in,globaldhstore_out 
 
 def plotgauch(instore,outstore,dhlist,molecule,save,shift=False):
-    """Function to plot dihedral angles as a function of z depth from PBCFIX_dihedralplusangles2 output"""
+    """Function to plot dihedral angles as a function of z depth from PBCFIX_dihedralplusangles output"""
     for dh in range(len(dhlist)):
         if shift == True:
             freqin = np.histogram(instore[dh], np.arange(0, 361, 1))[0]
@@ -130,8 +130,8 @@ def plotgauch(instore,outstore,dhlist,molecule,save,shift=False):
             plt.savefig('/home/kselvon/Downloads/directedruns/'+molecule+'/Gauchness/'+title)
         plt.show()
 
-def extractdhacrossz(dhstore,zran):
-    """ Function to extract values from PBCFIX_dihedralplusangles2 output  """ 
+def extractdhacrossz(dhstore, zran):
+    """ Function to extract values from PBCFIX_dihedralplusangles output  """ 
     dhnum = np.shape(dhstore)[1]
     dh_overz = []
     for dh in range(dhnum):
