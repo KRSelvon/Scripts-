@@ -67,20 +67,20 @@ def get_hvy_indicies(molecule, typelist, inout, twotb, zval=0):
         namelist.append(solute.names[i])
     return hvylist, namelist
 
-def internal_hydrogen_bonding_new(molecule,inout,dnr,polarh,custnames=False,indexs=[],twotb=False,savehbonds=False):
+def internal_hydrogen_bonding(molecule, inout, dnr, polarh, custnames=False, indexs=[], twotb=False, savehbonds=False):
     """Wrapper function to call all necesary functions for intH bonding """
     if custnames == False:
-        hatomlist,names = get_hvy_indicies_new(molecule, dnr, inout, twotb, zval=0)
+        hatomlist, names = get_hvy_indicies(molecule, dnr, inout, twotb, zval=0)
     if custnames == True:
         hatomlist = indexs    
-    mydict ={}
+    mydict = {}
     for n, j in enumerate(polarh):
         for m, i in enumerate(hatomlist):
              print('on ', n, ' of ', len(polarh), 'polarh, on ', m,' of ', len(hatomlist),' hatoms' )
-             mydict['atoms '+str(i)+' '+str(j)] = graph_Hbonds_new(molecule, 'bynum '+str(i), 'bynum '+str(j), inout, range(31), twotb, saverdf=False, save=savehbonds ,plot=False)
+             mydict['atoms '+str(i)+' '+str(j)] = graph_Hbonds(molecule, 'bynum '+str(i), 'bynum '+str(j), inout, range(31), twotb, saverdf=False, save=savehbonds ,plot=False)
     return mydict
 
-def intH_inout_compare_plotter(molecule,dictin,dictout,typedict,save=False):
+def intH_inout_compare_plotter(molecule, dictin, dictout, typedict, save=False):
     """ plot intH for a each heavy atom, on seperate graphs comparing in and out"""
     inkeys = dictin.keys()
     outkeys = dictout.keys()
@@ -94,6 +94,6 @@ def intH_inout_compare_plotter(molecule,dictin,dictout,typedict,save=False):
         plt.legend(loc='best')
         plt.xlabel('z depth Angstom')
         plt.ylabel('H bonds')
-        if save==True:
+        if save == True:
             savedir = '/home/kselvon/Downloads/directedruns/'+molecule+'/intH'
             plt.savefig(savedir+'/'+title)
