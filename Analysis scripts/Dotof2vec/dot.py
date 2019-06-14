@@ -1,4 +1,4 @@
-def dot(v1,v2):
+def dot(v1, v2):
     """
     compute the angle between two 3d vectors using the dot product rule.
     Returns answer in degrees.     
@@ -76,7 +76,7 @@ def dotoftwovects(molecule, bynum_vec1, bynum_vec2, selectedzeds=[0,5,10,15,20,2
 
     savepath = '/home/kselvon/Downloads/directedruns/'+molecule+'/Vector-folding/'
 
-    zstore_in =[]
+    zstore_in = []
     zstore_out = []      
     
     #store lengths of trajs to normalise frequnecy in histogram plots 
