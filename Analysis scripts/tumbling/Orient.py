@@ -1,6 +1,6 @@
-def Orientation_spherical2(molecule, bynum, selectedzeds=range(31), saveplots=False, twotb=False):
+def Orientation_spherical(molecule, bynum, selectedzeds=range(31), saveplots=False, twotb=False):
     """ Wrapper function to perform orientational analysis of molecule in simulation
-        2nd version of function with modifications to the order parameter produced 
+        (2nd version of function with modifications to the order parameter produced) 
     """ 
 
     #set up save folder
@@ -98,7 +98,7 @@ def Get_atomcoords(molecule, zval, inout, bynum_vec, twotb):
     drug = u.select_atoms('resid 129')
     for ts in u.trajectory:
         #ref atom xyz
-        refatom=  drug.get_positions()[0]
+        refatom =  drug.get_positions()[0]
         #new position array
         newpos = np.zeros_like(drug.get_positions())
         #loop through all other atoms in drug
