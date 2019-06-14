@@ -10,7 +10,7 @@ def Hbonds(molecule,zval,atomid1,atomid2,inout,twotb=False,save=False,plotting=F
         u = readinU("/home/kselvon/Downloads/directedruns/", molecule, zval, inout)
 
     freqstore = np.zeros(69)
-    count =0
+    count = 0
     pos_array1 = np.zeros((len(u.trajectory), 3))
     pos_array2 = np.zeros((len(u.trajectory), 3))
     r = np.zeros((len(u.trajectory), 1))
