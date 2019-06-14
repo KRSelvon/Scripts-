@@ -1,4 +1,4 @@
-def Hbonds_new(molecule,zval,atomid1,atomid2,inout,twotb=False,save=False,plotting=False):
+def Hbonds(molecule,zval,atomid1,atomid2,inout,twotb=False,save=False,plotting=False):
     """
     Get internal H bonds between atomid1 = bynum of polar h, atomid2 = bynum of heavy atom
     """
@@ -35,7 +35,7 @@ def Hbonds_new(molecule,zval,atomid1,atomid2,inout,twotb=False,save=False,plotti
     bondval  = sum(r <= 3.25)/float(len(u.trajectory))
     return bondval
 
-def graph_Hbonds_new(molecule,id1,id2,inout,zrange,twotb=False,saverdf=False,save=False,plot=False):
+def graph_Hbonds(molecule,id1,id2,inout,zrange,twotb=False,saverdf=False,save=False,plot=False):
     """  plot number of H bonds as function of Z """
     bvalstore = []
     for i in zrange:
@@ -50,7 +50,7 @@ def graph_Hbonds_new(molecule,id1,id2,inout,zrange,twotb=False,saverdf=False,sav
         plt.savefig('/media/kselvon/D20492AA049290D9/Iridis-runs/E-decomposed/'+molecule+'/InternalHbonds_'+id1+'_'+id2)
     return bvalstore
 
-def get_hvy_indicies_new(molecule, typelist, inout, twotb, zval=0):
+def get_hvy_indicies(molecule, typelist, inout, twotb, zval=0):
     """Get the heavy atom indicies for Hbonding functions"""    
     if twotb == True:
         u = newUin(molecule, inout, zval)
