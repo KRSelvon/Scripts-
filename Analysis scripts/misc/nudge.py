@@ -2,7 +2,7 @@
 def nudgeXY(zval):
     
     """
-    function to nudge solvent in the xy plane by modufying the coordinates, not yet generalised
+    function to nudge solvent in the xy plane by modifying the coordinates, not yet generalised
     need to edit adresses to use. 
     
     """
