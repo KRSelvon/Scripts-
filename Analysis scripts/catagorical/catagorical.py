@@ -36,7 +36,7 @@ def spearmans_rank_correlation(xs, ys):
     return scipy.stats.pearsonr(xranks, yranks)   
 
 
-def LOBFbasic2(xs, ys, table, dic, title='', xlab='', ylab='', save=False):
+def LOBFbasic(xs, ys, table, dic, title='', xlab='', ylab='', save=False):
     """get line of best fit and statistics for a set of xy coordinates
        basic version of LOBFcatagorical function"""
     m, c, r_val, p_val, stder = stats.linregress(xs, ys)
@@ -60,7 +60,7 @@ def LOBFbasic2(xs, ys, table, dic, title='', xlab='', ylab='', save=False):
     return m, c, r_val, p_val, stder
     
 def LOBFcatagorical(xs, ys, table, dic, save, title='', xlab='', ylab=''):
-    """get line of best fit and statistics for a set of xy coordinates"""
+    """get line of best fit and statistics for a set of xy coordinates, perform catagorical analysis"""
     m, c, r_val, p_val, stder = stats.linregress(xs, ys)
     colordic = {'a':'r','b':'b','n':'g'}
 
@@ -120,8 +120,6 @@ def wham_data(molecule, save=False):
     #read in the data
     adress_in = '/media/kselvon/D20492AA049290D9/Iridis-runs/directedruns/'+molecule+'/in/'
     adress_out = '/media/kselvon/D20492AA049290D9/Iridis-runs/directedruns/'+molecule+'/out/'
-    #adress_in = '/media/kselvon/D20492AA049290D9/Iridis-runs/directedruns/'+molecule+'/chargezero/in/'
-    #adress_out = '/media/kselvon/D20492AA049290D9/Iridis-runs/directedruns/'+molecule+'/chargezero/out/'
     data_in = np.genfromtxt(adress_in+'wham.pmf')
     data_out = np.genfromtxt(adress_out+'wham.pmf')
 
@@ -161,9 +159,6 @@ def wham_data(molecule, save=False):
     fav = interpolate.interp1d(xav, yav)
     TFEav = fav(0)
     
-
-    
-
     #plot raw data with error bars
     plt.figure()
     title2 = molecule+' PMF DOPC'
