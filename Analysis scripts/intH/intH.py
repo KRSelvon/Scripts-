@@ -60,8 +60,8 @@ def get_hvy_indicies(molecule, typelist, inout, twotb, zval=0):
     solute = u.select_atoms('resid 129')
     indlist = [i for i, x in enumerate(solute.names) if x in typelist]
 
-    hvylist =[]
-    namelist =[]
+    hvylist = []
+    namelist = []
     for i in indlist:
         hvylist.append(solute.indices[i]+1) #the plus 1 is needed to get correct indexing sol.indicies retuns a number 1 too small
         namelist.append(solute.names[i])
